@@ -1,4 +1,4 @@
-package com.stanley.rest.ws.restfuldemo;
+package com.stanley.rest.ws.restfuldemo.helloworld;
 
 public class HelloWorldBean {
 
