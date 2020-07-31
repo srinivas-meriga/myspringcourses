@@ -9,11 +9,11 @@
 		<version>2.3.1.RELEASE</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.ryjios</groupId>
-	<artifactId>ryjios-services</artifactId>
+	<groupId>com.rijyos</groupId>
+	<artifactId>rijyos-services</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>ryjios-services</name>
-	<description>Micro services project for Ryjios air monitoring apps</description>
+	<description>Micro services project for Rijyos air monitoring apps</description>
 
 	<properties>
 		<java.version>1.8</java.version>
