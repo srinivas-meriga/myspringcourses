@@ -1,14 +1,18 @@
 package com.ryjios.ms.user;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ryjios.ms.device.entity.MonitoringDevice;
 import com.sun.istack.NotNull;
 
 import io.swagger.annotations.ApiModel;
@@ -41,6 +45,10 @@ public class User {
     @Size(min = 4, message = "Password should be at least 4 characters")
     @NotNull
     private String userPassword;
+    
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<MonitoringDevice> devices;
 
     
     public User() {
@@ -139,6 +147,22 @@ public class User {
      */
     public void setUserPassword(String userPassword) {
         this.userPassword = userPassword;
+    }
+    
+    
+
+    /**
+     * @return the devices
+     */
+    public List<MonitoringDevice> getDevices() {
+        return devices;
+    }
+
+    /**
+     * @param devices the devices to set
+     */
+    public void setDevices(List<MonitoringDevice> devices) {
+        this.devices = devices;
     }
 
     @Override

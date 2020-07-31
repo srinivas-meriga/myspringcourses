@@ -19,7 +19,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.ryjios.ms.user.exception.UserNotFoundException;
 
-
 @RestController
 public class UserJPAResource {
 
@@ -40,9 +39,9 @@ public class UserJPAResource {
             throw new UserNotFoundException("id-" + id);
         }
 
-       return user.get();
+        return user.get();
 //        return resource;
-       
+
     }
 
     @DeleteMapping(path = "/rjam/users/{id}")
@@ -60,9 +59,9 @@ public class UserJPAResource {
                 .toUri();
         return ResponseEntity.created(location).build();
     }
-    
+
     @PutMapping(path = "/rjam/users/{id}")
-    public ResponseEntity<Object> updateStudent(@RequestBody User user, @PathVariable int id) {
+    public ResponseEntity<Object> updateUser(@RequestBody User user, @PathVariable int id) {
 
         Optional<User> userOptional = userRepository.findById(id);
 
@@ -70,27 +69,24 @@ public class UserJPAResource {
             return ResponseEntity.notFound().build();
 
         user.setId(id);
-        
+
         userRepository.save(user);
 
         return ResponseEntity.noContent().build();
     }
-    
-    
+
     @GetMapping(path = "/rjam/users/{emailId}/loginValidate/{password}")
     public User loginValidate(@PathVariable String emailId, @PathVariable String password) {
-        Optional<User>  existingUser=  userRepository.findByUserEmailId(emailId);
-        if(!existingUser.isPresent() ) {
-                throw new UserNotFoundException("emailId-" + emailId);
+        Optional<User> existingUser = userRepository.findByUserEmailId(emailId);
+        if (!existingUser.isPresent()) {
+            throw new UserNotFoundException("emailId-" + emailId);
         }
         User user = existingUser.get();
-        if(!password.equals(user.getUserPassword())) {
+        if (!password.equals(user.getUserPassword())) {
             throw new UserNotFoundException("invalid credentials");
         }
-        
-       return user;
+
+        return user;
     }
-    
-    
 
 }
