@@ -35,6 +35,7 @@ public class MonitoringDevice {
     private String deviceName;
     
     @ManyToOne(fetch=FetchType.LAZY)
+    @JsonIgnore
     private User user;
     
 //    @OneToMany(mappedBy = "device")

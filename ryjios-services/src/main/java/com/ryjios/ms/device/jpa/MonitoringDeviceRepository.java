@@ -10,5 +10,7 @@ import com.ryjios.ms.device.entity.MonitoringDevice;
 @Repository
 public interface MonitoringDeviceRepository extends JpaRepository<MonitoringDevice, Integer>{
 
-    //public List<MonitoringDevice> findByUserId(String userId);
+    public List<MonitoringDevice> findByUserId(Integer userId);
+    
+    public MonitoringDevice findByDeviceId(String deviceId);
 }

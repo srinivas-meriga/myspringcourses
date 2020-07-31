@@ -9,11 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
-import org.hibernate.annotations.Filter;
-
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ryjios.ms.device.entity.MonitoringDevice;
 
 @Entity
@@ -25,6 +22,7 @@ public class CO2SensorData {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIdentityReference(alwaysAsId = true)
+    @JsonIgnore
     private MonitoringDevice device;
 
     private BigDecimal reading;
