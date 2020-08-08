@@ -1,6 +1,7 @@
 package com.rijyos.ms.user;
 
 import java.net.URI;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -21,7 +21,6 @@ import com.rijyos.ms.user.exception.UserNotFoundException;
 
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import net.bytebuddy.asm.Advice.Return;
 
 @RestController
 public class UserJPAResource {
@@ -34,13 +33,13 @@ public class UserJPAResource {
         return userRepository.findAll();
     }
 
-    @GetMapping("/rjam/users/{id}")
-    public User retrieveUser(@PathVariable int id) {
+    @GetMapping("/rjam/users/{userId}")
+    public User retrieveUser(@PathVariable String userId) {
 
-        Optional<User> user = userRepository.findById(id);
+        Optional<User> user = userRepository.findById(userId);
 
         if (!user.isPresent()) {
-            throw new UserNotFoundException("id-" + id);
+            throw new UserNotFoundException("userId-" + userId);
         }
 
         return user.get();
@@ -48,40 +47,43 @@ public class UserJPAResource {
 
     }
 
-    @DeleteMapping(path = "/rjam/users/{id}")
-    public void deleteUser(@PathVariable int id) {
+    @DeleteMapping(path = "/rjam/users/{userId}")
+    public void deleteUser(@PathVariable String userId) {
 
-        userRepository.deleteById(id);
+        userRepository.deleteById(userId);
 
     }
 
     @PostMapping(path = "/rjam/users")
     public User createUser(@Valid @RequestBody User user) {
         System.out.println("before creating user = " + user);
+        user.setRegestiredDate(new Timestamp(System.currentTimeMillis()));
         User savedUser = userRepository.save(user);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedUser.getId())
-                .toUri();
+//        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{userId}").buildAndExpand(savedUser.getUserId())
+//                .toUri();
         return savedUser;
     }
 
-    @PutMapping(path = "/rjam/users/{id}")
-    public ResponseEntity<Object> updateUser(@RequestBody User user, @PathVariable int id) {
+    @PostMapping(path = "/rjam/users/{userId}")
+    public ResponseEntity<Object> updateUser(@RequestBody User user, @PathVariable String userId) {
 
-        Optional<User> userOptional = userRepository.findById(id);
+        Optional<User> userOptional = userRepository.findById(userId);
 
         if (!userOptional.isPresent())
             return ResponseEntity.notFound().build();
 
-        user.setId(id);
-
+        user.setUserId(userId);
+        user.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
         userRepository.save(user);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{userId}")
+                .buildAndExpand(user.getUserId()).toUri();
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.created(location).build();
     }
 
     @PostMapping(path = "/rjam/users/loginValidate")
-    @ApiResponses(value = {@ApiResponse(code = 400, message = "Bad Request (Validation error)"), @ApiResponse(code = 404,
-    message = "Source Price List not found")})
+    @ApiResponses(value = { @ApiResponse(code = 400, message = "Bad Request (Validation error)"),
+            @ApiResponse(code = 404, message = "Source Price List not found") })
     public User loginValidate(@RequestBody User user) {
         String emailId = user.getUserEmailId();
         String password = user.getUserPassword();

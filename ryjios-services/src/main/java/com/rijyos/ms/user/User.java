@@ -1,18 +1,17 @@
 package com.rijyos.ms.user;
 
+import java.sql.Timestamp;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.rijyos.ms.device.entity.MonitoringDevice;
+import org.hibernate.annotations.GenericGenerator;
+
 import com.sun.istack.NotNull;
 
 import io.swagger.annotations.ApiModel;
@@ -23,60 +22,51 @@ import io.swagger.annotations.ApiModelProperty;
 public class User {
 
     @Id
-    @GeneratedValue
-    private Integer id;
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    private String userId;
 
-   // @Size(min = 3, message = "First Name should have at least 3 characters")
-    //@ApiModelProperty(notes = "First Name should have at least 3 characters")
+    // @Size(min = 3, message = "First Name should have at least 3 characters")
+    // @ApiModelProperty(notes = "First Name should have at least 3 characters")
     private String firstName;
 
-    //@Size(min = 3, message = "Last Name should have at least 3 characters")
-    //@ApiModelProperty(notes = "Last Name should have at least 3 characters")
+    // @Size(min = 3, message = "Last Name should have at least 3 characters")
+    // @ApiModelProperty(notes = "Last Name should have at least 3 characters")
     private String lastName;
 
     @Past
     @ApiModelProperty(notes = "Birth date should in in the past")
     private Date brithDate;
 
-    @Email (message="Email Id should in proper format")
+    @Email(message = "Email Id should in proper format")
     @NotNull
     private String userEmailId;
-    
+
     @Size(min = 4, message = "Password should be at least 4 characters")
     @NotNull
     private String userPassword;
-    
-    @OneToMany(mappedBy = "user")
-    @JsonIgnore
-    private List<MonitoringDevice> devices;
 
-    
+    private Timestamp regestiredDate;
+
+    private Timestamp updatedDate;
+
     public User() {
 
     }
 
-    public User(Integer id, String firstName, String lastName, Date brithDate, String emailId, String password) {
+    public User(String userId, String firstName, String lastName, @Past Date brithDate,
+            @Email(message = "Email Id should in proper format") String userEmailId,
+            @Size(min = 4, message = "Password should be at least 4 characters") String userPassword,
+            Timestamp regestiredDate, Timestamp updatedDate) {
         super();
-        this.id = id;
+        this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.brithDate = brithDate;
-        this.userPassword = password;
-        this.userEmailId = emailId;
-    }
-
-    /**
-     * @return the id
-     */
-    public Integer getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(Integer id) {
-        this.id = id;
+        this.userEmailId = userEmailId;
+        this.userPassword = userPassword;
+        this.regestiredDate = regestiredDate;
+        this.updatedDate = updatedDate;
     }
 
     /**
@@ -148,31 +138,59 @@ public class User {
     public void setUserPassword(String userPassword) {
         this.userPassword = userPassword;
     }
-    
-    
 
     /**
-     * @return the devices
+     * @return the userId
      */
-    public List<MonitoringDevice> getDevices() {
-        return devices;
+    public String getUserId() {
+        return userId;
     }
 
     /**
-     * @param devices the devices to set
+     * @param userId the userId to set
      */
-    public void setDevices(List<MonitoringDevice> devices) {
-        this.devices = devices;
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    
+    
+
+    /**
+     * @return the regestiredDate
+     */
+    public Timestamp getRegestiredDate() {
+        return regestiredDate;
+    }
+
+    /**
+     * @param regestiredDate the regestiredDate to set
+     */
+    public void setRegestiredDate(Timestamp regestiredDate) {
+        this.regestiredDate = regestiredDate;
+    }
+
+    /**
+     * @return the updatedDate
+     */
+    public Timestamp getUpdatedDate() {
+        return updatedDate;
+    }
+
+    /**
+     * @param updatedDate the updatedDate to set
+     */
+    public void setUpdatedDate(Timestamp updatedDate) {
+        this.updatedDate = updatedDate;
     }
 
     @Override
     public String toString() {
-        return "User [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", brithDate=" + brithDate
-                + ", userEmailId=" + userEmailId + ", userPassword=" + userPassword + "]";
+        return "User [userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName + ", brithDate="
+                + brithDate + ", userEmailId=" + userEmailId + ", userPassword=" + userPassword + ", regestiredDate="
+                + regestiredDate + ", updatedDate=" + updatedDate + "]";
     }
 
-    
-
-    
+   
 
 }

@@ -4,26 +4,20 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.rijyos.ms.device.entity.MonitoringDevice;
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 public class SO2SensorData {
 
     @Id
-    @GeneratedValue
-    private Integer readingId;
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    private String readingId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIdentityReference(alwaysAsId = true)
-    @JsonIgnore
-    private MonitoringDevice device;
+    private String deviceId;
 
     private BigDecimal reading;
 
@@ -35,43 +29,41 @@ public class SO2SensorData {
 
     }
 
-    public SO2SensorData(BigDecimal reading, Timestamp capturedTime, String status, Integer id,
-            MonitoringDevice device) {
-        this.readingId = id;
-        this.device = device;
+    public SO2SensorData(String readingId, String deviceId, BigDecimal reading, Timestamp capturedTime, String status) {
+        super();
+        this.readingId = readingId;
+        this.deviceId = deviceId;
         this.reading = reading;
         this.capturedTime = capturedTime;
         this.status = status;
     }
 
-    
-
     /**
      * @return the readingId
      */
-    public Integer getReadingId() {
+    public String getReadingId() {
         return readingId;
     }
 
     /**
-     * @param readinId the readinId to set
+     * @param readingId the readingId to set
      */
-    public void setReadingId(Integer readingId) {
+    public void setReadingId(String readingId) {
         this.readingId = readingId;
     }
 
     /**
-     * @return the device
+     * @return the deviceId
      */
-    public MonitoringDevice getDevice() {
-        return device;
+    public String getDeviceId() {
+        return deviceId;
     }
 
     /**
-     * @param device the device to set
+     * @param deviceId the deviceId to set
      */
-    public void setDevice(MonitoringDevice device) {
-        this.device = device;
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 
     /**
@@ -114,6 +106,12 @@ public class SO2SensorData {
      */
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "SO2SensorData [readingId=" + readingId + ", deviceId=" + deviceId + ", reading=" + reading
+                + ", capturedTime=" + capturedTime + ", status=" + status + "]";
     }
 
 }

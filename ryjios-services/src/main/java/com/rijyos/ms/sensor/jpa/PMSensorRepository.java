@@ -5,13 +5,14 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.rijyos.ms.sensor.entity.CO2SensorData;
+import com.rijyos.ms.sensor.entity.COSensorData;
 import com.rijyos.ms.sensor.entity.PMSensorData;
-import com.rijyos.ms.sensor.entity.RHSensorData;
 
 @Repository
-public interface PMSensorRepository extends JpaRepository<PMSensorData, Integer> {
+public interface PMSensorRepository extends JpaRepository<PMSensorData, String> {
     
-    public List<PMSensorData> findByDeviceId(Integer deviceId);
+    public List<PMSensorData> findByDeviceId(String deviceId);
+    
+    public PMSensorData findTop1ByDeviceIdOrderByCapturedTimeDesc(String deviceId);
 
 }

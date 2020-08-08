@@ -33,11 +33,10 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
         return new ResponseEntity<Object>(response, HttpStatus.NOT_FOUND);
     }
     
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-       // ExceptionResponse response = new ExceptionResponse(new Date(), ex.getMessage(), ex.getBindingResult().toString());
-        //ExceptionResponse response = new ExceptionResponse(new Date(), "Validation Error", ex.getBindingResult().toString());
         ExceptionResponse response = new ExceptionResponse(new Date(), "Validation Error", ex.getBindingResult().getAllErrors().toString());
         return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
     }

@@ -9,9 +9,9 @@ import org.springframework.stereotype.Repository;
 import com.rijyos.ms.device.entity.MonitoringDevice;
 
 @Repository
-public interface MonitoringDeviceRepository extends JpaRepository<MonitoringDevice, Integer>{
+public interface MonitoringDeviceRepository extends JpaRepository<MonitoringDevice, String>{
 
-    public List<MonitoringDevice> findByUserId(Integer userId);
+    public List<MonitoringDevice> findByUserId(String userId);
     
-    public Optional<MonitoringDevice> findByDeviceId(String deviceId);
+    public Optional<MonitoringDevice> findByDeviceMacId(String deviceId);
 }
