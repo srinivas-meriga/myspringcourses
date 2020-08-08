@@ -14,11 +14,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rijyos.ms.device.entity.MonitoringDevice;
 
 @Entity
-public class HumiditySensorData  {
+public class SmokeSensorData {
 
     @Id
     @GeneratedValue
-    private Integer humReadingId;
+    private Integer readingId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIdentityReference(alwaysAsId = true)
@@ -31,13 +31,13 @@ public class HumiditySensorData  {
 
     private String status;
 
-    public HumiditySensorData() {
+    public SmokeSensorData() {
 
     }
 
-    public HumiditySensorData(BigDecimal reading, Timestamp capturedTime, String status, Integer id,
+    public SmokeSensorData(BigDecimal reading, Timestamp capturedTime, String status, Integer id,
             MonitoringDevice device) {
-        this.humReadingId = id;
+        this.readingId = id;
         this.device = device;
         this.reading = reading;
         this.capturedTime = capturedTime;
@@ -49,15 +49,15 @@ public class HumiditySensorData  {
     /**
      * @return the readingId
      */
-    public Integer getHumReadingId() {
-        return humReadingId;
+    public Integer getReadingId() {
+        return readingId;
     }
 
     /**
      * @param readinId the readinId to set
      */
-    public void setHumReadingId(Integer readingId) {
-        this.humReadingId = readingId;
+    public void setReadingId(Integer readingId) {
+        this.readingId = readingId;
     }
 
     /**

@@ -18,7 +18,7 @@ public class CO2SensorData {
 
     @Id
     @GeneratedValue
-    private Integer id;
+    private Integer readingId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIdentityReference(alwaysAsId = true)
@@ -37,26 +37,27 @@ public class CO2SensorData {
 
     public CO2SensorData(BigDecimal reading, Timestamp capturedTime, String status, Integer id,
             MonitoringDevice device) {
-//        super(reading, capturedTime, status);
-        this.id = id;
+        this.readingId = id;
         this.device = device;
         this.reading = reading;
         this.capturedTime = capturedTime;
         this.status = status;
     }
 
+    
+
     /**
-     * @return the id
+     * @return the readingId
      */
-    public Integer getId() {
-        return id;
+    public Integer getReadingId() {
+        return readingId;
     }
 
     /**
-     * @param id the id to set
+     * @param readinId the readinId to set
      */
-    public void setId(Integer id) {
-        this.id = id;
+    public void setReadingId(Integer readingId) {
+        this.readingId = readingId;
     }
 
     /**

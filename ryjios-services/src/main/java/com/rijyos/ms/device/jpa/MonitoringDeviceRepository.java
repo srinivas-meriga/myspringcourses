@@ -1,6 +1,7 @@
 package com.rijyos.ms.device.jpa;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -12,5 +13,5 @@ public interface MonitoringDeviceRepository extends JpaRepository<MonitoringDevi
 
     public List<MonitoringDevice> findByUserId(Integer userId);
     
-    public MonitoringDevice findByDeviceId(String deviceId);
+    public Optional<MonitoringDevice> findByDeviceId(String deviceId);
 }

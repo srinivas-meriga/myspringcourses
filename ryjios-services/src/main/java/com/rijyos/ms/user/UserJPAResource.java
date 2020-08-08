@@ -19,6 +19,10 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.rijyos.ms.user.exception.UserNotFoundException;
 
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import net.bytebuddy.asm.Advice.Return;
+
 @RestController
 public class UserJPAResource {
 
@@ -52,12 +56,12 @@ public class UserJPAResource {
     }
 
     @PostMapping(path = "/rjam/users")
-    public ResponseEntity<Object> createUser(@Valid @RequestBody User user) {
+    public User createUser(@Valid @RequestBody User user) {
         System.out.println("before creating user = " + user);
         User savedUser = userRepository.save(user);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedUser.getId())
                 .toUri();
-        return ResponseEntity.created(location).build();
+        return savedUser;
     }
 
     @PutMapping(path = "/rjam/users/{id}")
@@ -75,18 +79,22 @@ public class UserJPAResource {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping(path = "/rjam/users/{emailId}/loginValidate/{password}")
-    public User loginValidate(@PathVariable String emailId, @PathVariable String password) {
-        Optional<User> existingUser = userRepository.findByUserEmailId(emailId);
-        if (!existingUser.isPresent()) {
+    @PostMapping(path = "/rjam/users/loginValidate")
+    @ApiResponses(value = {@ApiResponse(code = 400, message = "Bad Request (Validation error)"), @ApiResponse(code = 404,
+    message = "Source Price List not found")})
+    public User loginValidate(@RequestBody User user) {
+        String emailId = user.getUserEmailId();
+        String password = user.getUserPassword();
+        Optional<User> optionalUser = userRepository.findByUserEmailId(emailId);
+        if (!optionalUser.isPresent()) {
             throw new UserNotFoundException("emailId-" + emailId);
         }
-        User user = existingUser.get();
-        if (!password.equals(user.getUserPassword())) {
+        User existingUser = optionalUser.get();
+        if (!password.equals(existingUser.getUserPassword())) {
             throw new UserNotFoundException("invalid credentials");
         }
 
-        return user;
+        return existingUser;
     }
 
 }

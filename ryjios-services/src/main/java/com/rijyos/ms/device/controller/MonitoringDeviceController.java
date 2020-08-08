@@ -21,40 +21,67 @@ import com.rijyos.ms.user.UserRepository;
 
 @RestController
 public class MonitoringDeviceController {
-    
+
     @Autowired(required = true)
     private UserRepository userRepository;
-    
+
     @Autowired(required = true)
     private MonitoringDeviceRepository deviceRepository;
-    
-  //Register Device
+
+    // Register Device
     @PostMapping(path = "/rjam/devices")
     public ResponseEntity<Object> createDevice(@Valid @RequestBody MonitoringDevice device) {
         System.out.println("before creating device = " + device);
-        MonitoringDevice savedDevice = deviceRepository.save(device);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedDevice.getId())
-                .toUri();
+        URI location = null;
+        String deviceId = device.getDeviceId();
+        Optional<MonitoringDevice> deviceOptional = deviceRepository.findByDeviceId(deviceId);
+        if (deviceOptional.isPresent()) {
+            MonitoringDevice existingDevice = deviceOptional.get();
+            if (null == existingDevice.getUser()) {
+                existingDevice.setUser(device.getUser());
+                existingDevice = deviceRepository.save(device);
+                location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                        .buildAndExpand(existingDevice.getId()).toUri();
+            }
+        } else {
+            MonitoringDevice savedDevice = deviceRepository.save(device);
+            location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                    .buildAndExpand(savedDevice.getId()).toUri();
+        }
         return ResponseEntity.created(location).build();
     }
-    
-    //Fetch Device Details
+
+    // Fetch Device Details
     @GetMapping(path = "/rjam/devices")
     public List<MonitoringDevice> retrieveAllDevices() {
         return deviceRepository.findAll();
     }
-    
-    //Fetch All devices for user
+
+    // Fetch All devices for user
     @GetMapping(path = "/rjam/devices/{userId}")
     public List<MonitoringDevice> retrieveAllDevicesForUser(@PathVariable int userId) {
         return deviceRepository.findByUserId(userId);
     }
-    
-    
-    //Delete Device
+
+    // Fetch All devices for user
+    @GetMapping(path = "/rjam/devices/{deviceId}")
+    public ResponseEntity<Object> retrieveDeviceByDeviceId(@PathVariable String deviceId) {
+        URI location = null;
+        Optional<MonitoringDevice> deviceOptional = deviceRepository.findByDeviceId(deviceId);
+        if (!deviceOptional.isPresent())
+            return ResponseEntity.notFound().build();
+
+        MonitoringDevice existingDevice = deviceOptional.get();
+        location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(existingDevice.getId())
+                .toUri();
+        return ResponseEntity.created(location).build();
+
+    }
+
+    // Delete Device
     // TODO
-    
-    //Update Device Details
+
+    // Update Device Details
     @PostMapping(path = "/rjam/devices/{id}")
     public ResponseEntity<Object> updateDevice(@RequestBody MonitoringDevice device, @PathVariable int id) {
 
@@ -69,6 +96,5 @@ public class MonitoringDeviceController {
 
         return ResponseEntity.noContent().build();
     }
-    
 
 }
